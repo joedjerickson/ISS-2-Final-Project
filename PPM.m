@@ -1,3 +1,6 @@
+dataSequenceTrain = 'sequence_solarWind_train';
+dataSequenceTest = 'sequence_solarWind_test';
+
 %nth order mixed PPM thing
 test = false;
 order = 3;
