@@ -1,8 +1,8 @@
-dataSequenceTrain = 'sequence_nonuniform_train';
-dataSequenceTest = 'sequence_nonuniform_test';
+dataSequenceTrain = 'sequence_heart2_train';
+dataSequenceTest = 'sequence_heart2_test';
 
 %Defines wether or not it will run on the test or training data.
-test = false;
+test = true;
 if(test==false)
     sequenceLength = initializeSymbolMachine(dataSequenceTrain);
 else
@@ -21,8 +21,8 @@ lag = 3;
 
 %Initial prediction
 firstNumber = 5;
-%Define characteristic of normal distribution
-var = 2;
+%Define standard deviation of normal distribution (Optimize)
+sdev = 0.5;
 
 %Initializes the last seen values to the mean of the distribution.
 last = 555;
@@ -41,12 +41,54 @@ for ii = 1:sequenceLength
     end
 
     prediction = bArr(1) + sum(bArr(2:end).*vec(1:end));
+    % Make forecasted digit (prediction) mean of a new Gaussian distribution and
+    % calculate next digit probabilities
+    for i1 = 1:9
+        if (i1 == 1)
+            probs(i1) = areaOfNormalFn(1.5, 1, prediction, sdev, "less than");
+        elseif (i1 == 9)
+            probs(i1) = areaOfNormalFn(8.5, 1, prediction, sdev, "greater than");
+        else
+            num1 = i1 + 0.5;
+            num2 = i1 - 0.5;
+            probs(i1) = areaOfNormalFn(num1, num2, prediction, sdev, "between");
+        end
+    end
     [symbol,penalty] = symbolMachine(probs);
-    %Implement normal distribution ...
     
     %Updates last 3 digits
     last = mod(last,10^(lag-1));
     last = last * 10;
-    last = last + thisSymbol;
+    last = last + symbol;
 end
 reportSymbolMachine;
+
+function ret = areaOfNormalFn(baseNum, optLower, mean, sdev, opt)
+% baseNum: the baseline number, enter this number in as the number for less
+% than or greater than calculations, and as the higher number if
+% looking for area between numbers
+% optLower: optional lower number, despite being optional a value must be
+% passed in always, but the number passed in is only used if between option
+% is selected
+% mean: distribution mean
+% sdev: standard deviation
+% opt: option of area less than baseNum, area greater than baseNum, and area between baseNum and optLower
+
+    z1 = (baseNum - mean) / sdev;
+    z2 = (optLower - mean) / sdev;
+
+    if (opt == "less than")
+        ret = zScoreNormalFn(z1);
+    elseif (opt == "greater than")
+        ret = 1 - zScoreNormalFn(z1);
+    elseif (opt == "between")
+        ret = zScoreNormalFn(z1) - zScoreNormalFn(z2);
+    else
+        disp("ERROR NO SUCH OPTION FOUND");
+    end
+end
+
+% Function to compute the area under the Normal distribution given the z-score
+function res = zScoreNormalFn(z)
+    res = 0.5.*(1+erf(z./sqrt(2)));
+end
