@@ -1,3 +1,5 @@
+%Code inspired and modified from Mike Wakin and Aidan Ferry
+%Charles Vath & Joe Erickson
 dataSequenceTrain = 'sequence_solarWind_train';
 dataSequenceTest = 'sequence_solarWind_test';
 
