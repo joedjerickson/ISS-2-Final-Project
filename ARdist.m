@@ -1,5 +1,3 @@
-%Code inspired and modified from Mike Wakin and Aidan Ferry
-%Charles Vath & Joe Erickson
 dataSequenceTrain = 'sequence_solarWind_train';
 dataSequenceTest = 'sequence_solarWind_test';
 
@@ -39,8 +37,18 @@ for ii = 1:sequenceLength
         vec(i1) = mod(num, 10);
         num = floor(num / 10);
     end
-
+    
+    %If value is less than or greater than the mean of dataset, set initial
+    %bArr coefficiant to push data towards mean
+    if (vec(1) > mean(dataSequenceTest))
+        bArr(1) = -0.00005;
+    elseif (vec(1) < mean(dataSequenceTest))
+        bArr(1) = 0.00005;
+    end
+    
+    %Make prediction using Autoregression model
     prediction = bArr(1) + sum(bArr(2:end).*vec(1:end));
+
     % Make forecasted digit (prediction) mean of a new Gaussian distribution and
     % calculate next digit probabilities
     for i1 = 1:9
