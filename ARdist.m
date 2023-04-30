@@ -38,8 +38,8 @@ for ii = 1:sequenceLength
         num = floor(num / 10);
     end
     
-    %If value is less than or greater than the mean of dataset, set initial
-    %bArr coefficiant to push data towards mean
+    %If last seen value is less than or greater than the mean of dataset, 
+    % set initial bArr coefficiant to push data towards mean
     if (vec(1) > mean(dataSequenceTest))
         bArr(1) = -0.00005;
     elseif (vec(1) < mean(dataSequenceTest))
