@@ -1,5 +1,5 @@
-dataSequenceTrain = 'sequence_heart2_train';
-dataSequenceTest = 'sequence_heart2_test';
+dataSequenceTrain = 'sequence_solarWind_train';
+dataSequenceTest = 'sequence_solarWind_test';
 
 %Defines wether or not it will run on the test or training data.
 test = true;
@@ -14,21 +14,19 @@ initProbs = ones(1,9)/9; %Default distribution. Uncomment for the
 %first time that you try new data or a new order chain
 
 %Function to implement autoregressive models
-%Decleares the desired lag (How far back the model will look)
-lag = 3;
-
-%upperBound = 9;
+%Decleares the desired lag (How far back the model will look) (Optimize for each dataset)
+lag = 8;
 
 %Initial prediction
 firstNumber = 5;
-%Define standard deviation of normal distribution (Optimize)
-sdev = 0.5;
+%Define standard deviation of normal distribution (Optimize for each dataset)
+sdev = 0.32;
 
 %Initializes the last seen values to the mean of the distribution.
-last = 555;
+last = 55555555;
 
-%Defines the weights of the last n digits seen
-bArr = [0, 0.6, 0.3, 0.1];
+%Defines the weights of the last n digits seen (Optimize for each dataset)
+bArr = [0 0.6 0.15 0.1 0.07 0.04 0.02 0.01 0.01];
 
 %Loop through the dataset
 for ii = 1:sequenceLength
